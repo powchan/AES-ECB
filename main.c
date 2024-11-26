@@ -400,7 +400,7 @@ int aesDecrypt(const uint8_t *key, uint32_t keyLen, const uint8_t *ct, uint8_t *
 {
     AesKey aesKey;
     uint8_t *pos = pt;
-    const uint32_t *rk = aesKey.dK; // 解密秘钥指针
+    const uint32_t *rk = aesKey.dK; // 解密密钥指针
     uint8_t out[BLOCKSIZE] = {0};
     uint8_t actualKey[16] = {0};
     uint8_t state[4][4] = {0};
@@ -455,27 +455,21 @@ int aesDecrypt(const uint8_t *key, uint32_t keyLen, const uint8_t *ct, uint8_t *
     return 0;
 }
 
-#include <stdio.h>
-// 方便输出16进制数据
-void printHex(uint8_t *ptr, int len, char *tag)
-{
-    printf("%s\ndata[%d]: ", tag, len);
-    for (int i = 0; i < len; ++i)
-    {
-        printf("%.2X ", *ptr++);
-    }
-    printf("\n");
-}
-
 int main()
 {
+    const uint8_t k[16] = "1234567812345678";
+    const uint8_t ct[16] = {0x23, 0x13, 0xee, 0xd2, 0x0b, 0x29, 0x6a, 0xe6, 0x4d, 0x9e, 0x57, 0xc9, 0x90, 0xe5, 0x73, 0xd0};
+    uint8_t r[16];
+    aesDecrypt(k, 16, ct, r, 16);
+    write(1, r, 16);
+
     uint8_t key[16] = "\0";
     uint8_t text[16] = "\0";
     uint8_t res[16];
     int mode;
     while (1)
     {
-        
+
         printf(
             "0: exit\n"
             "1: encrypt\n"
@@ -492,7 +486,7 @@ int main()
             printf("Input key: ");
             scanf("%16s", key);
             printf("Input text: ");
-            scanf("%16s", key);
+            scanf("%16s", text);
             aesEncrypt(key, 16, text, res, 16);
             printf("Result: ");
             puts(res);
@@ -501,8 +495,7 @@ int main()
             printf("Input key: ");
             scanf("%16s", key);
             printf("Input text: ");
-            scanf("%16s", key);
-
+            scanf("%16s", text);
             aesDecrypt(key, 16, text, res, 16);
             printf("Result: ");
             puts(res);
@@ -511,10 +504,5 @@ int main()
             break;
         }
     }
-    // const uint8_t key[16] = "1234567812345678";
-    // const uint8_t ct[16] = {0x23, 0x13, 0xee, 0xd2, 0x0b, 0x29, 0x6a, 0xe6, 0x4d, 0x9e, 0x57, 0xc9, 0x90, 0xe5, 0x73, 0xd0};
-    // uint8_t res[16];
-    // aesDecrypt(key, 16, ct, res, 16);
-    // write(1, res, 16);
-    // return 0;
+
 }
