@@ -115,7 +115,6 @@ int storeStateArray(uint8_t (*state)[4], uint8_t *out)
 // 密钥扩展
 int keyExpansion(const uint8_t *key, uint32_t keyLen, AesKey *aesKey)
 {
-
     if (NULL == key || NULL == aesKey)
     {
         printf("keyExpansion param is NULL\n");
@@ -154,7 +153,6 @@ int keyExpansion(const uint8_t *key, uint32_t keyLen, AesKey *aesKey)
     // 即dk[0-3]=ek[41-44], dk[4-7]=ek[37-40]... dk[41-44]=ek[0-3]
     for (int j = 0; j < 11; ++j)
     {
-
         for (int i = 0; i < 4; ++i)
         {
             v[i] = w[i];
@@ -334,7 +332,6 @@ int invMixColumns(uint8_t (*state)[4])
 // 这样输出长度与输入长度相同，函数调用外部为输出数据分配内存
 int aesEncrypt(const uint8_t *key, uint32_t keyLen, const uint8_t *pt, uint8_t *ct, uint32_t len)
 {
-
     AesKey aesKey;
     uint8_t *pos = ct;
     const uint32_t *rk = aesKey.eK; // 解密秘钥指针
@@ -484,21 +481,23 @@ int main()
             break;
         case 1:
             printf("Input key: ");
-            scanf("%16s", key);
+            read(0, key, 16);
             printf("Input text: ");
-            scanf("%16s", text);
+            read(0, text, 16);
             aesEncrypt(key, 16, text, res, 16);
             printf("Result: ");
-            puts(res);
+            fwrite(res, 1, 16, stdout);
+            puts("");
             break;
         case 2:
             printf("Input key: ");
-            scanf("%16s", key);
+            read(0, key, 16);
             printf("Input text: ");
-            scanf("%16s", text);
+            read(0, text, 16);
             aesDecrypt(key, 16, text, res, 16);
             printf("Result: ");
-            puts(res);
+            fwrite(res, 1, 16, stdout);
+            puts("");
             break;
         default:
             break;
